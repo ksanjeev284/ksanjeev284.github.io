@@ -1,54 +1,65 @@
-# Astro Starter Kit: Basics
+# Personal Portfolio Website
 
-```sh
-npm create astro@latest -- --template basics
+Welcome to my portfolio website repository! This site showcases my projects and skills in web development.
+
+🌐 **Live Site**: [ksanjeev284.github.io](https://ksanjeev284.github.io)
+
+## 🚀 Featured Projects
+
+- **YouTube to Spotify Converter**: Convert YouTube playlists to Spotify playlists easily
+- **3D 2048 Game**: A 3D version of the classic 2048 puzzle game
+- **YouTube Thumbnail Downloader**: Download YouTube video thumbnails in different resolutions
+- **CTC Calculator**: Calculate Cost to Company with detailed breakdown
+- **Mathematical Toolkit**: Collection of mathematical tools and calculators
+- **Rubik's Cube Solver**: Interactive Rubik's cube solver with step-by-step guide
+
+## 🛠️ Built With
+
+- **Framework**: [Astro](https://astro.build)
+- **Styling**: Custom CSS with responsive design
+- **Deployment**: GitHub Pages
+- **CI/CD**: GitHub Actions
+- **Screenshot Generation**: screenshotone.com API
+
+## ✨ Features
+
+- 🎨 Modern and responsive design
+- 📱 Mobile-friendly interface
+- 🖼️ Live project previews
+- 🚀 Fast performance
+- 🔍 SEO optimized
+- 🌙 Dark mode support
+
+## 🔧 Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## 📝 Environment Variables
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Create a `.env` file in the root directory with the following variables:
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+```env
+PUBLIC_SCREENSHOT_API_KEY=your_api_key_here
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 📄 License
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 📬 Contact
 
-## 🧞 Commands
+Feel free to reach out if you have any questions or just want to connect!
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- GitHub: [@ksanjeev284](https://github.com/ksanjeev284)
