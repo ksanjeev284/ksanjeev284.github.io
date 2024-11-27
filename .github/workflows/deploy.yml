@@ -39,6 +39,7 @@ jobs:
         env:
           PREFIX_PATHS: true
           PUBLIC_SCREENSHOT_API_KEY: ${{ secrets.PUBLIC_SCREENSHOT_API_KEY }}
+          PUBLIC_GITHUB_TOKEN: ${{ secrets.PUBLIC_GITHUB_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
