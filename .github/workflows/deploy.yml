@@ -38,6 +38,7 @@ jobs:
         run: npm run build
         env:
           PREFIX_PATHS: true
+          PUBLIC_SCREENSHOT_API_KEY: ${{ secrets.PUBLIC_SCREENSHOT_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

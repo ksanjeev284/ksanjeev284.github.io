@@ -7,6 +7,11 @@ interface Props {
 
 const { project } = Astro.props;
 const fallbackImage = "/project-images/placeholder.svg";
+const apiKey = import.meta.env.PUBLIC_SCREENSHOT_API_KEY;
+
+// Generate screenshot URLs
+const screenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(project.url)}&access_key=${apiKey}&full_page=false&viewport_width=1920&viewport_height=1080&device_scale_factor=1&format=jpg&quality=100`;
+const mobileScreenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(project.url)}&access_key=${apiKey}&full_page=false&device=iPhone+12+Pro&format=jpg&quality=100`;
 ---
 
 <div class="project-card">
@@ -15,7 +20,18 @@ const fallbackImage = "/project-images/placeholder.svg";
       src={project.image} 
       alt={`${project.title} preview`}
       onerror={`this.onerror=null; this.src='${fallbackImage}'`}
+      class="main-image"
+      loading="lazy"
     />
+    <div class="screenshot-preview">
+      <button class="preview-button" onclick={`openScreenshots(event, '${project.url}')`}>
+        View Live Preview
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 14l5-5-5-5"></path>
+          <path d="M4 20v-7a4 4 0 014-4h12"></path>
+        </svg>
+      </button>
+    </div>
   </div>
   <div class="project-content">
     <h3>{project.title}</h3>
@@ -41,29 +57,54 @@ const fallbackImage = "/project-images/placeholder.svg";
     background: white;
     border-radius: 1rem;
     overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
 
   .project-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
   }
 
   .project-image {
+    position: relative;
+    width: 100%;
     height: 200px;
     overflow: hidden;
-    background: #f3f4f6;
   }
 
-  .project-image img {
+  .main-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
   }
 
-  .project-card:hover .project-image img {
+  .project-card:hover .main-image {
     transform: scale(1.05);
+  }
+
+  .screenshot-preview {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .preview-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .preview-button:hover {
+    background: rgba(0, 0, 0, 0.9);
   }
 
   .project-content {
@@ -71,15 +112,15 @@ const fallbackImage = "/project-images/placeholder.svg";
   }
 
   h3 {
-    margin: 0;
-    color: var(--accent-dark);
-    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
   }
 
   p {
+    margin: 0 0 1rem 0;
     color: #666;
-    margin: 0.5rem 0 1rem;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   .tags {
@@ -91,10 +132,10 @@ const fallbackImage = "/project-images/placeholder.svg";
 
   .tag {
     background: var(--accent-light);
-    color: white;
+    color: var(--accent-dark);
     padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
   }
 
   .view-project {
@@ -104,10 +145,174 @@ const fallbackImage = "/project-images/placeholder.svg";
     color: var(--accent);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s;
+    transition: color 0.3s ease;
   }
 
   .view-project:hover {
     color: var(--accent-dark);
   }
 </style>
+
+<script>
+async function openScreenshots(event, url) {
+  event.preventDefault();
+  
+  // Create loading modal
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+  // Create loading spinner
+  const spinner = document.createElement('div');
+  spinner.style.cssText = `
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  `;
+  
+  // Add spinner animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  modal.appendChild(spinner);
+  document.body.appendChild(modal);
+
+  try {
+    // Generate screenshot URLs
+    const apiKey = import.meta.env.PUBLIC_SCREENSHOT_API_KEY;
+    const screenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(url)}&access_key=${apiKey}&full_page=false&viewport_width=1920&viewport_height=1080&device_scale_factor=1&format=jpg&quality=100`;
+    const mobileScreenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(url)}&access_key=${apiKey}&full_page=false&device=iPhone+12+Pro&format=jpg&quality=100`;
+
+    // Create image container
+    const imageContainer = document.createElement('div');
+    imageContainer.style.cssText = `
+      max-width: 90%;
+      max-height: 90%;
+      position: relative;
+      display: flex;
+      gap: 20px;
+    `;
+
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '×';
+    closeButton.style.cssText = `
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+    `;
+
+    // Create desktop preview
+    const desktopContainer = document.createElement('div');
+    desktopContainer.style.cssText = `
+      flex: 2;
+      position: relative;
+    `;
+    
+    const desktopLabel = document.createElement('div');
+    desktopLabel.textContent = 'Desktop View';
+    desktopLabel.style.cssText = `
+      color: white;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    `;
+    
+    const desktopImg = document.createElement('img');
+    desktopImg.src = screenshotUrl;
+    desktopImg.style.cssText = `
+      max-width: 100%;
+      max-height: calc(80vh - 30px);
+      object-fit: contain;
+    `;
+
+    // Create mobile preview
+    const mobileContainer = document.createElement('div');
+    mobileContainer.style.cssText = `
+      flex: 1;
+      position: relative;
+    `;
+    
+    const mobileLabel = document.createElement('div');
+    mobileLabel.textContent = 'Mobile View';
+    mobileLabel.style.cssText = `
+      color: white;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    `;
+    
+    const mobileImg = document.createElement('img');
+    mobileImg.src = mobileScreenshotUrl;
+    mobileImg.style.cssText = `
+      max-width: 100%;
+      max-height: calc(80vh - 30px);
+      object-fit: contain;
+    `;
+
+    // Event listeners
+    closeButton.onclick = () => modal.remove();
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.remove();
+    };
+
+    // Assemble the preview
+    desktopContainer.appendChild(desktopLabel);
+    desktopContainer.appendChild(desktopImg);
+    mobileContainer.appendChild(mobileLabel);
+    mobileContainer.appendChild(mobileImg);
+    
+    imageContainer.appendChild(closeButton);
+    imageContainer.appendChild(desktopContainer);
+    imageContainer.appendChild(mobileContainer);
+
+    // Replace spinner with images once loaded
+    Promise.all([
+      new Promise(resolve => desktopImg.onload = resolve),
+      new Promise(resolve => mobileImg.onload = resolve)
+    ]).then(() => {
+      modal.innerHTML = '';
+      modal.appendChild(imageContainer);
+    });
+
+  } catch (error) {
+    console.error('Error loading screenshots:', error);
+    modal.innerHTML = `
+      <div style="color: white; text-align: center;">
+        <p>Error loading preview. Please try again later.</p>
+        <button onclick="this.parentElement.parentElement.remove()" 
+                style="background: white; border: none; padding: 8px 16px; margin-top: 10px; cursor: pointer; border-radius: 4px;">
+          Close
+        </button>
+      </div>
+    `;
+  }
+}
+
+// Make function available globally
+window.openScreenshots = openScreenshots;
+</script>
