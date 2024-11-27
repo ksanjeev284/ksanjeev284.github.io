@@ -31,7 +31,7 @@ export const projects: Project[] = [
   {
     title: "CTC Calculator",
     description: "Calculate Cost to Company with detailed breakdown",
-    url: "https://www.ctccalculator.in/",
+    url: "https://ctccalculator.netlify.app/",
     image: "/project-images/ctc-calculator.png",
     tags: ["Finance", "Calculator"]
   },
@@ -45,7 +45,7 @@ export const projects: Project[] = [
   {
     title: "Rubik's Cube Solver",
     description: "Interactive Rubik's cube solver with step-by-step guide",
-    url: "https://rubixcubesolver.netlify.app/",
+    url: "https://rubikscubesolver3d.netlify.app/",
     image: "/project-images/rubiks-cube.png",
     tags: ["Three.js", "Puzzle", "Algorithm"]
   }

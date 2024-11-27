@@ -9,9 +9,36 @@ const { project } = Astro.props;
 const fallbackImage = "/project-images/placeholder.svg";
 const apiKey = import.meta.env.PUBLIC_SCREENSHOT_API_KEY;
 
-// Generate screenshot URLs
-const screenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(project.url)}&access_key=${apiKey}&full_page=false&viewport_width=1920&viewport_height=1080&device_scale_factor=1&format=jpg&quality=100`;
-const mobileScreenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(project.url)}&access_key=${apiKey}&full_page=false&device=iPhone+12+Pro&format=jpg&quality=100`;
+console.log('API Key in component:', apiKey); // Debug log
+
+// Function to generate screenshot URL with error handling
+function generateScreenshotUrl(url: string, isMobile = false) {
+  try {
+    const baseUrl = 'https://api.screenshotone.com/take';
+    const params = new URLSearchParams({
+      'access_key': apiKey,
+      'url': url,
+      'full_page': 'false',
+      'format': 'jpg',
+      'quality': '100',
+      ...(isMobile 
+        ? { 'device': 'iPhone 12 Pro' }
+        : { 
+            'viewport_width': '1920',
+            'viewport_height': '1080',
+            'device_scale_factor': '1'
+          }
+      )
+    });
+    return `${baseUrl}?${params.toString()}`;
+  } catch (error) {
+    console.error('Error generating screenshot URL:', error);
+    return null;
+  }
+}
+
+const screenshotUrl = generateScreenshotUrl(project.url);
+const mobileScreenshotUrl = generateScreenshotUrl(project.url, true);
 ---
 
 <div class="project-card">
@@ -24,7 +51,12 @@ const mobileScreenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIC
       loading="lazy"
     />
     <div class="screenshot-preview">
-      <button class="preview-button" onclick={`openScreenshots(event, '${project.url}')`}>
+      <button 
+        class="preview-button" 
+        data-url={project.url}
+        data-api-key={apiKey}
+        data-title={project.title}
+      >
         View Live Preview
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 14l5-5-5-5"></path>
@@ -154,165 +186,322 @@ const mobileScreenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIC
 </style>
 
 <script>
-async function openScreenshots(event, url) {
-  event.preventDefault();
-  
-  // Create loading modal
-  const modal = document.createElement('div');
-  modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  `;
-
-  // Create loading spinner
-  const spinner = document.createElement('div');
-  spinner.style.cssText = `
-    width: 50px;
-    height: 50px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  `;
-  
-  // Add spinner animation
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
-  
-  modal.appendChild(spinner);
-  document.body.appendChild(modal);
-
-  try {
-    // Generate screenshot URLs
-    const apiKey = import.meta.env.PUBLIC_SCREENSHOT_API_KEY;
-    const screenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(url)}&access_key=${apiKey}&full_page=false&viewport_width=1920&viewport_height=1080&device_scale_factor=1&format=jpg&quality=100`;
-    const mobileScreenshotUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(url)}&access_key=${apiKey}&full_page=false&device=iPhone+12+Pro&format=jpg&quality=100`;
-
-    // Create image container
-    const imageContainer = document.createElement('div');
-    imageContainer.style.cssText = `
-      max-width: 90%;
-      max-height: 90%;
-      position: relative;
-      display: flex;
-      gap: 20px;
-    `;
-
-    // Create close button
-    const closeButton = document.createElement('button');
-    closeButton.innerHTML = '×';
-    closeButton.style.cssText = `
-      position: absolute;
-      top: -40px;
-      right: 0;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 2rem;
-      cursor: pointer;
-    `;
-
-    // Create desktop preview
-    const desktopContainer = document.createElement('div');
-    desktopContainer.style.cssText = `
-      flex: 2;
-      position: relative;
-    `;
-    
-    const desktopLabel = document.createElement('div');
-    desktopLabel.textContent = 'Desktop View';
-    desktopLabel.style.cssText = `
-      color: white;
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    `;
-    
-    const desktopImg = document.createElement('img');
-    desktopImg.src = screenshotUrl;
-    desktopImg.style.cssText = `
-      max-width: 100%;
-      max-height: calc(80vh - 30px);
-      object-fit: contain;
-    `;
-
-    // Create mobile preview
-    const mobileContainer = document.createElement('div');
-    mobileContainer.style.cssText = `
-      flex: 1;
-      position: relative;
-    `;
-    
-    const mobileLabel = document.createElement('div');
-    mobileLabel.textContent = 'Mobile View';
-    mobileLabel.style.cssText = `
-      color: white;
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    `;
-    
-    const mobileImg = document.createElement('img');
-    mobileImg.src = mobileScreenshotUrl;
-    mobileImg.style.cssText = `
-      max-width: 100%;
-      max-height: calc(80vh - 30px);
-      object-fit: contain;
-    `;
-
-    // Event listeners
-    closeButton.onclick = () => modal.remove();
-    modal.onclick = (e) => {
-      if (e.target === modal) modal.remove();
-    };
-
-    // Assemble the preview
-    desktopContainer.appendChild(desktopLabel);
-    desktopContainer.appendChild(desktopImg);
-    mobileContainer.appendChild(mobileLabel);
-    mobileContainer.appendChild(mobileImg);
-    
-    imageContainer.appendChild(closeButton);
-    imageContainer.appendChild(desktopContainer);
-    imageContainer.appendChild(mobileContainer);
-
-    // Replace spinner with images once loaded
-    Promise.all([
-      new Promise(resolve => desktopImg.onload = resolve),
-      new Promise(resolve => mobileImg.onload = resolve)
-    ]).then(() => {
-      modal.innerHTML = '';
-      modal.appendChild(imageContainer);
+  function initializePreviewButtons() {
+    const buttons = document.querySelectorAll('.preview-button');
+    buttons.forEach(button => {
+      if (button instanceof HTMLElement) {
+        button.addEventListener('click', async (event) => {
+          event.preventDefault();
+          const url = button.dataset.url;
+          const apiKey = button.dataset.apiKey;
+          const title = button.dataset.title;
+          
+          console.log('Button clicked with:', { url, apiKey: apiKey?.substring(0, 5) + '...' }); // Debug log
+          
+          if (url && apiKey) {
+            try {
+              // First, test if the target URL is accessible
+              const testResponse = await fetch(url, { method: 'HEAD' }).catch(() => null);
+              if (!testResponse?.ok) {
+                throw new Error(`Target website is not accessible: ${url}`);
+              }
+              
+              await openScreenshots(event, url, apiKey, title);
+            } catch (error) {
+              console.error('Error in click handler:', error);
+              showError(error);
+            }
+          } else {
+            console.error('Missing required data:', { url, hasApiKey: !!apiKey });
+            showError(new Error('Missing URL or API key'));
+          }
+        });
+      }
     });
+  }
 
-  } catch (error) {
-    console.error('Error loading screenshots:', error);
+  function showError(error: Error) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    `;
+
     modal.innerHTML = `
-      <div style="color: white; text-align: center;">
-        <p>Error loading preview. Please try again later.</p>
+      <div style="color: white; text-align: center; padding: 20px; max-width: 80%;">
+        <h3 style="color: #ff4444; margin-bottom: 20px;">Error Loading Preview</h3>
+        <p style="margin-bottom: 15px;">${error.message}</p>
+        <div style="color: #666; font-size: 0.8rem; margin-bottom: 20px; word-break: break-all;">
+          <pre style="white-space: pre-wrap;">${error.stack || 'No stack trace available'}</pre>
+        </div>
         <button onclick="this.parentElement.parentElement.remove()" 
                 style="background: white; border: none; padding: 8px 16px; margin-top: 10px; cursor: pointer; border-radius: 4px;">
           Close
         </button>
       </div>
     `;
-  }
-}
 
-// Make function available globally
-window.openScreenshots = openScreenshots;
+    document.body.appendChild(modal);
+  }
+
+  async function openScreenshots(event: Event, url: string, apiKey: string, title: string) {
+    console.log('Opening screenshots for:', url);
+    console.log('API key length:', apiKey?.length);
+    
+    // Create loading modal
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    `;
+
+    // Create title
+    const titleElement = document.createElement('h2');
+    titleElement.textContent = title;
+    titleElement.style.cssText = `
+      color: white;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    `;
+
+    // Create loading message
+    const loadingMessage = document.createElement('div');
+    loadingMessage.style.cssText = `
+      color: white;
+      margin-top: 20px;
+      font-size: 1rem;
+    `;
+    loadingMessage.textContent = 'Generating preview...';
+
+    // Create loading spinner
+    const spinner = document.createElement('div');
+    spinner.style.cssText = `
+      width: 50px;
+      height: 50px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    `;
+    
+    // Add spinner animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    modal.appendChild(titleElement);
+    modal.appendChild(spinner);
+    modal.appendChild(loadingMessage);
+    document.body.appendChild(modal);
+
+    try {
+      // Test the API key first
+      const testUrl = 'https://api.screenshotone.com/take?' + new URLSearchParams({
+        'access_key': apiKey,
+        'url': 'https://example.com',
+        'format': 'jpg'
+      }).toString();
+
+      const testResponse = await fetch(testUrl);
+      if (!testResponse.ok) {
+        const errorText = await testResponse.text();
+        throw new Error(`API key test failed: ${testResponse.status} ${testResponse.statusText}\n${errorText}`);
+      }
+
+      // Generate screenshot URLs
+      const baseUrl = 'https://api.screenshotone.com/take';
+      const desktopParams = new URLSearchParams({
+        'access_key': apiKey,
+        'url': url,
+        'full_page': 'false',
+        'viewport_width': '1920',
+        'viewport_height': '1080',
+        'device_scale_factor': '1',
+        'format': 'jpg',
+        'quality': '100'
+      });
+
+      const mobileParams = new URLSearchParams({
+        'access_key': apiKey,
+        'url': url,
+        'full_page': 'false',
+        'device': 'iPhone 12 Pro',
+        'format': 'jpg',
+        'quality': '100'
+      });
+
+      const screenshotUrl = `${baseUrl}?${desktopParams.toString()}`;
+      const mobileScreenshotUrl = `${baseUrl}?${mobileParams.toString()}`;
+
+      console.log('Desktop URL:', screenshotUrl);
+      console.log('Mobile URL:', mobileScreenshotUrl);
+
+      // Create image container
+      const imageContainer = document.createElement('div');
+      imageContainer.style.cssText = `
+        max-width: 90%;
+        max-height: 90%;
+        position: relative;
+        display: flex;
+        gap: 20px;
+      `;
+
+      // Create close button
+      const closeButton = document.createElement('button');
+      closeButton.innerHTML = '×';
+      closeButton.style.cssText = `
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        z-index: 1001;
+      `;
+
+      // Create desktop preview
+      const desktopContainer = document.createElement('div');
+      desktopContainer.style.cssText = `
+        flex: 2;
+        position: relative;
+      `;
+      
+      const desktopLabel = document.createElement('div');
+      desktopLabel.textContent = 'Desktop View';
+      desktopLabel.style.cssText = `
+        color: white;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+      `;
+      
+      const desktopImg = document.createElement('img');
+      desktopImg.style.cssText = `
+        max-width: 100%;
+        max-height: calc(80vh - 30px);
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      `;
+
+      // Create mobile preview
+      const mobileContainer = document.createElement('div');
+      mobileContainer.style.cssText = `
+        flex: 1;
+        position: relative;
+      `;
+      
+      const mobileLabel = document.createElement('div');
+      mobileLabel.textContent = 'Mobile View';
+      mobileLabel.style.cssText = `
+        color: white;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+      `;
+      
+      const mobileImg = document.createElement('img');
+      mobileImg.style.cssText = `
+        max-width: 100%;
+        max-height: calc(80vh - 30px);
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      `;
+
+      // Error handling for image loading
+      let loadedImages = 0;
+      const handleImageLoad = () => {
+        loadedImages++;
+        if (loadedImages === 2) {
+          modal.innerHTML = '';
+          modal.appendChild(imageContainer);
+          // Fade in images
+          setTimeout(() => {
+            desktopImg.style.opacity = '1';
+            mobileImg.style.opacity = '1';
+          }, 100);
+        }
+      };
+
+      const handleImageError = async (error: Error) => {
+        console.error('Error loading image:', error);
+        
+        // Try to get more details about the error
+        try {
+          const response = await fetch(screenshotUrl);
+          const errorText = await response.text();
+          error = new Error(`Failed to load image: ${response.status} ${response.statusText}\n${errorText}`);
+        } catch (fetchError) {
+          console.error('Error fetching error details:', fetchError);
+        }
+        
+        showError(error);
+      };
+
+      // Set up image loading
+      desktopImg.onload = handleImageLoad;
+      mobileImg.onload = handleImageLoad;
+      desktopImg.onerror = () => handleImageError(new Error('Failed to load desktop screenshot'));
+      mobileImg.onerror = () => handleImageError(new Error('Failed to load mobile screenshot'));
+
+      // Set image sources
+      desktopImg.src = screenshotUrl;
+      mobileImg.src = mobileScreenshotUrl;
+
+      // Event listeners
+      closeButton.onclick = () => modal.remove();
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+      };
+
+      // Assemble the preview
+      desktopContainer.appendChild(desktopLabel);
+      desktopContainer.appendChild(desktopImg);
+      mobileContainer.appendChild(mobileLabel);
+      mobileContainer.appendChild(mobileImg);
+      
+      imageContainer.appendChild(closeButton);
+      imageContainer.appendChild(desktopContainer);
+      imageContainer.appendChild(mobileContainer);
+
+      // Set a timeout to show an error if images don't load within 30 seconds
+      const timeout = setTimeout(() => {
+        if (loadedImages < 2) {
+          handleImageError(new Error('Preview generation timed out'));
+        }
+      }, 30000);
+
+    } catch (error) {
+      console.error('Error in screenshot preview:', error);
+      showError(error instanceof Error ? error : new Error(String(error)));
+    }
+  }
+
+  // Initialize when the DOM is ready
+  document.addEventListener('DOMContentLoaded', initializePreviewButtons);
 </script>
