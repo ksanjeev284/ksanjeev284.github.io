@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Profile from '../components/Profile.astro';
+import RepoCard from '../components/RepoCard.astro';
+import Skills from '../components/Skills.astro';
+import Projects from '../components/Projects.astro';
+import Contact from '../components/Contact.astro';
+import Background3D from '../components/Background3D';
+import { fetchGitHubProfile, fetchGitHubRepos } from '../utils/github';
+
+const username = 'ksanjeev284';
+const profile = await fetchGitHubProfile(username);
+const repos = await fetchGitHubRepos(username);
+---
+
+<Layout title={`${profile.name} - Portfolio`}>
+  <Background3D client:load />
+  <main>
+    <Profile profile={profile} />
+    <Projects />
+    <Skills />
+    <section class="repos">
+      <h2>Latest GitHub Projects</h2>
+      <div class="repo-grid">
+        {repos.map((repo) => <RepoCard repo={repo} />)}
+      </div>
+    </section>
+    <Contact profile={profile} />
+  </main>
+</Layout>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1rem;
+    max-width: 1200px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .repos {
+    margin-top: 3rem;
+    padding: 4rem 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+  }
+
+  h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+
+  .repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 0 2rem;
+  }
+</style>

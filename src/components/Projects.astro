@@ -1,0 +1,36 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import { projects } from '../data/projects';
+---
+
+<section class="projects">
+  <h2>Featured Projects</h2>
+  <div class="projects-grid">
+    {projects.map(project => (
+      <ProjectCard project={project} />
+    ))}
+  </div>
+</section>
+
+<style>
+  .projects {
+    padding: 4rem 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    margin: 2rem 0;
+    border-radius: 1rem;
+  }
+
+  h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 0 2rem;
+  }
+</style>
