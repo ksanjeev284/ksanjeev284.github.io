@@ -14,24 +14,147 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Zen+Tokyo+Zoo&display=swap" rel="stylesheet">
     <title>{title}</title>
   </head>
   <body>
+    <div class="kanji-overlay">
+      <span>夢</span>
+      <span>愛</span>
+      <span>美</span>
+      <span>運</span>
+      <span>命</span>
+    </div>
+    <div class="sakura-container"></div>
+    <div class="vaporwave-grid"></div>
+    <div class="vaporwave-overlay"></div>
+    <div class="aesthetic-elements"></div>
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+    <div class="floating-elements">
+      <!-- Floating symbols -->
+      <div class="symbols">
+        <span>⭐</span>
+        <span>🌙</span>
+        <span>✨</span>
+        <span>💫</span>
+        <span>🎭</span>
+      </div>
+      <!-- Sakura petals -->
+      <div class="petals"></div>
+    </div>
+    <div class="lain-elements">
+      <div class="binary-rain"></div>
+      <div class="glitch-text">present day, present time</div>
+      <div class="power-lines"></div>
+      <div class="circuit-grid"></div>
+    </div>
     <slot />
   </body>
 </html>
 
 <style is:global>
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes glowPulse {
+    0% { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+    50% { text-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent); }
+    100% { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+  }
+
+  @keyframes gridMove {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(100px); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  @keyframes sakuraFall {
+    0% {
+      transform: translateY(-10vh) rotate(0deg);
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+    }
+  }
+
+  @keyframes kanjiFloat {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+    50% { transform: translateY(-20px) rotate(5deg); opacity: 0.5; }
+    100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+  }
+
+  @keyframes floatText {
+    from { transform: translateX(-100%) rotate(-30deg); }
+    to { transform: translateX(100%) rotate(-30deg); }
+  }
+
+  @keyframes floatTextReverse {
+    from { transform: translateX(100%) rotate(15deg); }
+    to { transform: translateX(-100%) rotate(15deg); }
+  }
+
+  @keyframes noiseAnimation {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-1%, -1%); }
+    20% { transform: translate(1%, 1%); }
+    30% { transform: translate(-1%, 1%); }
+    40% { transform: translate(1%, -1%); }
+    50% { transform: translate(-1%, -1%); }
+    60% { transform: translate(1%, 1%); }
+    70% { transform: translate(-1%, 1%); }
+    80% { transform: translate(1%, -1%); }
+    90% { transform: translate(-1%, -1%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+    50% { opacity: 0.6; transform: scale(1.2) rotate(180deg); }
+  }
+
+  @keyframes fallingPetals {
+    from {
+      background-position: 0 -100vh, 20px -50vh;
+      transform: rotate(0deg);
+    }
+    to {
+      background-position: -200px 100vh, -100px 100vh;
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+  }
+
   :root {
-    --accent: #4f46e5;
-    --accent-light: #818cf8;
-    --accent-dark: #3730a3;
+    --accent: #ff71ce;
+    --accent-light: #b967ff;
+    --accent-dark: #01cdfe;
+    --accent-yellow: #fffb96;
+    --accent-cyan: #05ffa1;
+    --text-glow: 0 0 10px rgba(255, 113, 206, 0.8);
+    --neon-glow: 0 0 20px rgba(1, 205, 254, 0.5);
+    --grid-color: rgba(255, 113, 206, 0.5);
   }
   
   html {
-    font-family: system-ui, sans-serif;
-    background: #030712;
-    color: #1f2937;
+    font-family: 'VT323', 'Press Start 2P', system-ui, sans-serif;
+    background: linear-gradient(-45deg, #000033, #330033, #000066, #330066);
+    background-size: 400% 400%;
+    animation: gradientMove 15s ease infinite;
+    color: #ffffff;
     overflow-x: hidden;
   }
 
@@ -39,10 +162,356 @@ const { title } = Astro.props;
     margin: 0;
     padding: 0;
     min-height: 100vh;
+    position: relative;
   }
 
   * {
     box-sizing: border-box;
+  }
+
+  .kanji-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+  }
+
+  .kanji-overlay span {
+    font-family: 'Zen Tokyo Zoo', cursive;
+    font-size: 8rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 15px var(--accent);
+    animation: kanjiFloat 6s ease-in-out infinite;
+  }
+
+  .kanji-overlay span:nth-child(2) {
+    animation-delay: 1s;
+  }
+
+  .kanji-overlay span:nth-child(3) {
+    animation-delay: 2s;
+  }
+
+  .kanji-overlay span:nth-child(4) {
+    animation-delay: 3s;
+  }
+
+  .kanji-overlay span:nth-child(5) {
+    animation-delay: 4s;
+  }
+
+  .sakura-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .sakura-container::before {
+    content: '🌸';
+    position: absolute;
+    font-size: 20px;
+    animation: sakuraFall 10s linear infinite;
+    left: 10%;
+  }
+
+  .sakura-container::after {
+    content: '🌸';
+    position: absolute;
+    font-size: 15px;
+    animation: sakuraFall 8s linear infinite;
+    animation-delay: 4s;
+    left: 70%;
+  }
+
+  .vaporwave-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform-origin: top center;
+    transform: perspective(500px) rotateX(60deg);
+    animation: gridMove 20s linear infinite;
+    z-index: -1;
+  }
+
+  .vaporwave-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      linear-gradient(to bottom,
+        rgba(255, 113, 206, 0.1) 0%,
+        rgba(1, 205, 254, 0.1) 50%,
+        rgba(5, 255, 161, 0.1) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .aesthetic-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .aesthetic-elements::before {
+    content: "夢 愛 美 運 命";
+    position: absolute;
+    font-family: 'Zen Tokyo Zoo', cursive;
+    color: var(--accent);
+    opacity: 0.1;
+    font-size: 3rem;
+    white-space: nowrap;
+    animation: floatText 20s linear infinite;
+    transform: rotate(-30deg);
+  }
+
+  .aesthetic-elements::after {
+    content: "アエステティック バイブス";
+    position: absolute;
+    bottom: 5%;
+    right: -50%;
+    font-family: 'Zen Tokyo Zoo', cursive;
+    color: var(--accent-cyan);
+    opacity: 0.1;
+    font-size: 2rem;
+    white-space: nowrap;
+    animation: floatTextReverse 25s linear infinite;
+    transform: rotate(15deg);
+  }
+
+  .scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 0, 0, 0.05) 51%,
+      transparent 51%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+  }
+
+  .noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      repeating-radial-gradient(
+        circle at 50% 50%,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 3px,
+        transparent 4px
+      );
+    pointer-events: none;
+    opacity: 0.1;
+    z-index: -1;
+    animation: noiseAnimation 0.5s infinite;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 10% 20%, rgba(255, 113, 206, 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 90% 80%, rgba(1, 205, 254, 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+      repeating-linear-gradient(
+        45deg,
+        transparent 0%,
+        transparent 10%,
+        rgba(255, 113, 206, 0.05) 10%,
+        rgba(255, 113, 206, 0.05) 20%
+      );
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Press Start 2P', cursive;
+    color: var(--accent-yellow);
+    text-shadow: 3px 3px var(--accent-dark);
+    letter-spacing: 2px;
+    animation: glowPulse 2s ease-in-out infinite;
+    position: relative;
+  }
+
+  h1::before {
+    content: 'アエステティック';
+    position: absolute;
+    top: -1em;
+    left: 0;
+    font-size: 0.4em;
+    color: var(--accent);
+    font-family: 'Zen Tokyo Zoo', cursive;
+    opacity: 0.7;
+    transform: rotate(-5deg);
+  }
+
+  a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-shadow: var(--neon-glow);
+    position: relative;
+  }
+
+  a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+  }
+
+  a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  a:hover {
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent-cyan);
+  }
+
+  .card, .project-card, .repo-card {
+    background: rgba(0, 0, 51, 0.7);
+    backdrop-filter: blur(10px);
+    border: 2px solid;
+    border-image: linear-gradient(45deg, var(--accent), var(--accent-cyan)) 1;
+    box-shadow: 
+      0 0 20px rgba(1, 205, 254, 0.3),
+      inset 0 0 20px rgba(255, 113, 206, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .card::before, .project-card::before, .repo-card::before {
+    content: '波';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: 'Zen Tokyo Zoo', cursive;
+    color: var(--accent);
+    opacity: 0.3;
+    font-size: 2em;
+    transform: rotate(15deg);
+    transition: all 0.3s ease;
+  }
+
+  .card:hover::before, .project-card:hover::before, .repo-card:hover::before {
+    opacity: 0.6;
+    transform: rotate(0deg) scale(1.2);
+  }
+
+  .card:hover, .project-card:hover, .repo-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 
+      0 0 30px rgba(1, 205, 254, 0.5),
+      inset 0 0 30px rgba(255, 113, 206, 0.3);
+  }
+
+  button, .button {
+    background: linear-gradient(45deg, var(--accent-dark), var(--accent));
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: var(--text-glow);
+    box-shadow: 
+      0 0 10px var(--accent-dark),
+      inset 0 0 10px var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  button::after, .button::after {
+    content: 'クリック';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Zen Tokyo Zoo', cursive;
+    font-size: 0.8em;
+    color: var(--accent-cyan);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  button:hover::after, .button:hover::after {
+    opacity: 1;
+    top: -25px;
+  }
+
+  button::before, .button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transform: rotate(45deg);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+  }
+
+  button:hover, .button:hover {
+    transform: scale(1.05);
+    box-shadow: 
+      0 0 20px var(--accent),
+      inset 0 0 20px var(--accent-dark);
   }
 
   .background-3d {
@@ -51,7 +520,481 @@ const { title } = Astro.props;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0;
+    z-index: -2;
+    opacity: 0.3;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 51, 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--accent), var(--accent-dark));
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(var(--accent-dark), var(--accent-cyan));
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .kanji-overlay span {
+      font-size: 4rem;
+    }
+
+    .sakura-container::before,
+    .sakura-container::after {
+      font-size: 15px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+    }
+
+    h3, h4, h5, h6 {
+      font-size: 1rem;
+    }
+
+    h1::before {
+      font-size: 0.5em;
+      top: -1.5em;
+    }
+
+    button, .button {
+      padding: 8px 16px;
+      font-size: 0.7em;
+    }
+
+    button::after, .button::after {
+      display: none; /* Hide floating text on mobile */
+    }
+
+    .card, .project-card, .repo-card {
+      margin: 10px 5px;
+    }
+
+    .card::before, .project-card::before, .repo-card::before {
+      font-size: 1.5em;
+      top: 5px;
+      right: 5px;
+    }
+
+    /* Adjust grid for better mobile performance */
+    .vaporwave-grid {
+      background-size: 30px 30px;
+    }
+
+    /* Ensure content is readable on mobile */
+    body {
+      padding: 10px;
+    }
+
+    /* Adjust scrollbar for touch devices */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .aesthetic-elements::before,
+    .aesthetic-elements::after {
+      font-size: 2rem;
+    }
+
+    .noise {
+      opacity: 0.05;
+    }
+
+    .scanlines {
+      opacity: 0.2;
+    }
+  }
+
+  /* Small mobile devices */
+  @media (max-width: 480px) {
+    .kanji-overlay span {
+      font-size: 3rem;
+    }
+
+    .kanji-overlay {
+      padding: 10px;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+    }
+
+    h2 {
+      font-size: 1rem;
+    }
+
+    button, .button {
+      width: 100%;
+      margin: 5px 0;
+    }
+
+    /* Reduce animation intensity for better performance */
+    .vaporwave-grid {
+      animation-duration: 30s;
+    }
+
+    .sakura-container::before,
+    .sakura-container::after {
+      animation-duration: 15s;
+    }
+
+    /* Optimize for touch interactions */
+    a, button, .button {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 12px;
+    }
+  }
+
+  /* Prevent hover effects on touch devices */
+  @media (hover: none) {
+    a::after {
+      display: none;
+    }
+
+    .card:hover, .project-card:hover, .repo-card:hover {
+      transform: none;
+    }
+
+    button:hover, .button:hover {
+      transform: none;
+    }
+
+    /* Show alternative touch feedback */
+    .card:active, .project-card:active, .repo-card:active,
+    button:active, .button:active {
+      transform: scale(0.98);
+      transition: transform 0.1s;
+    }
+  }
+
+  /* High DPI screens */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .vaporwave-grid {
+      background-size: 25px 25px;
+    }
+  }
+
+  /* Landscape orientation adjustments */
+  @media (max-width: 768px) and (orientation: landscape) {
+    .kanji-overlay {
+      display: none; /* Hide floating kanji in landscape to prevent overlap */
+    }
+
+    .vaporwave-grid {
+      opacity: 0.5;
+    }
+
+    body {
+      padding: 5px;
+    }
+  }
+
+  /* Prefers reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    .sakura-container::before,
+    .sakura-container::after,
+    .vaporwave-grid,
+    .kanji-overlay span,
+    .aesthetic-elements::before,
+    .aesthetic-elements::after,
+    .noise {
+      animation: none;
+    }
+  }
+
+  .anime-decorations,
+  .character-1,
+  .character-2,
+  .character-3,
+  .anime-symbols,
+  .sakura-petals {
+    display: none;
+  }
+
+  /* Floating Elements */
+  .floating-elements {
+    position: fixed;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .symbols {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .symbols span {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.3;
+    animation: twinkle 3s ease-in-out infinite;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 10px var(--accent);
+  }
+
+  .symbols span:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+  .symbols span:nth-child(2) { top: 25%; right: 15%; animation-delay: 0.5s; }
+  .symbols span:nth-child(3) { top: 45%; left: 20%; animation-delay: 1s; }
+  .symbols span:nth-child(4) { top: 65%; right: 25%; animation-delay: 1.5s; }
+  .symbols span:nth-child(5) { top: 85%; left: 15%; animation-delay: 2s; }
+
+  .petals {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at center, var(--accent) 0%, transparent 60%),
+      radial-gradient(circle at center, var(--accent-cyan) 0%, transparent 60%);
+    background-size: 20px 20px, 15px 15px;
+    opacity: 0.1;
+    animation: fallingPetals 10s linear infinite;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 0c-1.4 0-2.5 1.1-2.5 2.5S8.6 5 10 5s2.5-1.1 2.5-2.5S11.4 0 10 0z'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 0c-1.4 0-2.5 1.1-2.5 2.5S8.6 5 10 5s2.5-1.1 2.5-2.5S11.4 0 10 0z'/%3E%3C/svg%3E");
+  }
+
+  /* Animations */
+  @keyframes twinkle {
+    0%, 100% { 
+      opacity: 0.3; 
+      transform: scale(1) rotate(0deg); 
+    }
+    50% { 
+      opacity: 0.6; 
+      transform: scale(1.2) rotate(180deg); 
+    }
+  }
+
+  @keyframes fallingPetals {
+    from {
+      background-position: 0 -100vh, 20px -50vh;
+      transform: rotate(0deg);
+    }
+    to {
+      background-position: -200px 100vh, -100px 100vh;
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { 
+      transform: translateY(0) rotate(0deg); 
+    }
+    50% { 
+      transform: translateY(-20px) rotate(5deg); 
+    }
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .symbols span {
+      font-size: 1.5rem;
+    }
+    
+    .petals {
+      opacity: 0.05;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .symbols span,
+    .petals {
+      animation: none;
+    }
+  }
+
+  /* Lain-inspired elements */
+  .lain-elements {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .binary-rain {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+      transparent 0%,
+      rgba(1, 205, 254, 0.05) 50%,
+      transparent 100%
+    );
+    animation: binaryRain 20s linear infinite;
+    opacity: 0.3;
+  }
+
+  .binary-rain::before {
+    content: "01";
+    position: absolute;
+    top: -50%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 12px;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 5px var(--accent-cyan);
+    animation: binaryFall 10s linear infinite;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .glitch-text {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: monospace;
+    font-size: 1rem;
+    color: var(--accent-cyan);
+    text-shadow: 
+      2px 2px var(--accent),
+      -2px -2px var(--accent-dark);
+    animation: glitchText 4s infinite;
+    opacity: 0.7;
+  }
+
+  .power-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 50px,
+        rgba(1, 205, 254, 0.1) 50px,
+        rgba(1, 205, 254, 0.1) 51px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 50px,
+        rgba(255, 113, 206, 0.1) 50px,
+        rgba(255, 113, 206, 0.1) 51px
+      );
+    opacity: 0.1;
+  }
+
+  .circuit-grid {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: 
+      linear-gradient(90deg, var(--accent-cyan) 1px, transparent 1px),
+      linear-gradient(0deg, var(--accent-cyan) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.05;
+    animation: circuitPulse 4s ease-in-out infinite;
+  }
+
+  /* Lain-inspired animations */
+  @keyframes binaryRain {
+    0% { background-position: 0 -1000px; }
+    100% { background-position: 0 1000px; }
+  }
+
+  @keyframes binaryFall {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  @keyframes glitchText {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(2px, -2px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(2px, 2px); }
+  }
+
+  @keyframes circuitPulse {
+    0%, 100% { opacity: 0.05; }
+    50% { opacity: 0.1; }
+  }
+
+  /* Enhanced glitch effect */
+  .glitch-text::before,
+  .glitch-text::after {
+    content: "present day, present time";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: glitchLayers 4s infinite;
+  }
+
+  .glitch-text::before {
+    color: var(--accent);
+    animation-delay: -0.2s;
+  }
+
+  .glitch-text::after {
+    color: var(--accent-dark);
+    animation-delay: 0.2s;
+  }
+
+  @keyframes glitchLayers {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); clip-path: inset(0 0 50% 0); }
+    40% { transform: translate(2px, -2px); clip-path: inset(50% 0 0 0); }
+    60% { transform: translate(-2px, -2px); clip-path: inset(25% 0 25% 0); }
+    80% { transform: translate(2px, 2px); clip-path: inset(10% 0 40% 0); }
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .glitch-text {
+      font-size: 0.8rem;
+    }
+
+    .binary-rain::before {
+      font-size: 10px;
+      line-height: 10px;
+    }
+
+    .power-lines,
+    .circuit-grid {
+      opacity: 0.05;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .binary-rain,
+    .glitch-text,
+    .circuit-grid {
+      animation: none;
+    }
   }
 </style>
