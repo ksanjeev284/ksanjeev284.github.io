@@ -6,56 +6,346 @@ interface Props {
 }
 
 const { href, title, body } = Astro.props;
+
+const kanjis = ['幸', '福', '運', '気', '力'];
+const randomKanji = kanjis[Math.floor(Math.random() * kanjis.length)];
 ---
 
 <li class="link-card">
+	<div class="card-glitch"></div>
+	<div class="kanji-mark">{randomKanji}</div>
 	<a href={href}>
-		<h2>
-			{title}
-			<span>&rarr;</span>
-		</h2>
-		<p>
-			{body}
-		</p>
+		<div class="card-content">
+			<h2>
+				{title}
+				<span>&rarr;</span>
+			</h2>
+			<p>
+				{body}
+			</p>
+		</div>
 	</a>
 </li>
 <style>
+	@keyframes glitch {
+		0% {
+			clip-path: polygon(0 2%, 100% 2%, 100% 5%, 0 5%);
+			transform: translate(0);
+		}
+		20% {
+			clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%);
+			transform: translate(-5px);
+		}
+		30% {
+			clip-path: polygon(0 10%, 100% 10%, 100% 20%, 0 20%);
+			transform: translate(5px);
+		}
+		40% {
+			clip-path: polygon(0 1%, 100% 1%, 100% 2%, 0 2%);
+			transform: translate(-5px);
+		}
+		50% {
+			clip-path: polygon(0 33%, 100% 33%, 100% 33%, 0 33%);
+			transform: translate(0);
+		}
+		55% {
+			clip-path: polygon(0 44%, 100% 44%, 100% 44%, 0 44%);
+			transform: translate(5px);
+		}
+		60% {
+			clip-path: polygon(0 50%, 100% 50%, 100% 20%, 0 20%);
+			transform: translate(-5px);
+		}
+		100% {
+			clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+			transform: translate(0);
+		}
+	}
+
+	@keyframes floatKanji {
+		0% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+		50% { transform: translateY(-5px) rotate(5deg); opacity: 0.6; }
+		100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+	}
+
 	.link-card {
 		list-style: none;
 		display: flex;
-		padding: 1px;
-		background-color: #23262d;
-		background-image: none;
-		background-size: 400%;
-		border-radius: 7px;
-		background-position: 100%;
-		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+		padding: 2px;
+		background: linear-gradient(135deg, 
+			rgba(255, 113, 206, 0.1), 
+			rgba(1, 205, 254, 0.1),
+			rgba(5, 255, 161, 0.1));
+		backdrop-filter: blur(10px);
+		border-radius: 10px;
+		transition: all 0.3s ease;
+		box-shadow: 
+			0 0 15px rgba(255, 113, 206, 0.3),
+			inset 0 0 15px rgba(1, 205, 254, 0.2);
+		border: 2px solid transparent;
+		background-clip: padding-box;
+		position: relative;
+		overflow: hidden;
 	}
+
+	.kanji-mark {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		font-family: 'Zen Tokyo Zoo', cursive;
+		font-size: 2.5em;
+		color: var(--accent);
+		opacity: 0.3;
+		pointer-events: none;
+		animation: floatKanji 4s ease-in-out infinite;
+		transform-origin: center;
+		z-index: 1;
+	}
+
+	.card-glitch {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(135deg,
+			var(--accent),
+			var(--accent-dark),
+			var(--accent-cyan));
+		opacity: 0;
+		z-index: -1;
+		transition: opacity 0.3s ease;
+	}
+
+	.link-card:hover .card-glitch {
+		opacity: 0.1;
+		animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+	}
+
+	.link-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			rgba(255, 255, 255, 0.2),
+			transparent
+		);
+		transition: 0.5s;
+	}
+
+	.link-card:hover::before {
+		left: 100%;
+	}
+
 	.link-card > a {
 		width: 100%;
 		text-decoration: none;
 		line-height: 1.4;
 		padding: calc(1.5rem - 1px);
 		border-radius: 8px;
-		color: white;
-		background-color: #23262d;
-		opacity: 0.8;
+		color: #fff;
+		background: transparent;
+		opacity: 1;
+		transition: all 0.3s ease;
+		z-index: 1;
 	}
+
+	.card-content {
+		position: relative;
+		z-index: 2;
+	}
+
+	.card-content::before {
+		content: 'クリック';
+		position: absolute;
+		bottom: -20px;
+		right: 0;
+		font-family: 'Zen Tokyo Zoo', cursive;
+		font-size: 0.8em;
+		color: var(--accent-cyan);
+		opacity: 0;
+		transition: all 0.3s ease;
+		transform: rotate(-5deg);
+	}
+
+	.link-card:hover .card-content::before {
+		opacity: 0.7;
+		bottom: -25px;
+	}
+
+	.link-card:hover {
+		transform: translateY(-5px) scale(1.02);
+		border-color: var(--accent-light);
+		box-shadow: 
+			0 0 30px rgba(1, 205, 254, 0.5),
+			inset 0 0 30px rgba(255, 113, 206, 0.3);
+	}
+
 	h2 {
 		margin: 0;
 		font-size: 1.25rem;
-		transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		transition: all 0.3s ease;
+		color: var(--accent-yellow);
+		text-shadow: 2px 2px var(--accent-dark);
+		font-family: 'Press Start 2P', cursive;
+		position: relative;
 	}
+
+	h2::before {
+		content: 'タイトル';
+		position: absolute;
+		top: -15px;
+		left: 0;
+		font-family: 'Zen Tokyo Zoo', cursive;
+		font-size: 0.6em;
+		color: var(--accent);
+		opacity: 0;
+		transition: all 0.3s ease;
+	}
+
+	.link-card:hover h2::before {
+		opacity: 0.7;
+		top: -20px;
+	}
+
+	h2 span {
+		color: var(--accent-cyan);
+		opacity: 0;
+		transform: translateX(-10px);
+		transition: all 0.3s ease;
+		text-shadow: 0 0 10px var(--accent-cyan);
+	}
+
+	.link-card:hover h2 span {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
 	p {
 		margin-top: 0.5rem;
 		margin-bottom: 0;
+		color: #fff;
+		font-family: 'VT323', monospace;
+		font-size: 1.2rem;
+		letter-spacing: 0.5px;
+		text-shadow: 1px 1px var(--accent-dark);
 	}
-	.link-card:is(:hover, :focus-within) {
-		background-position: 0;
-		background-image: var(--accent-gradient);
+
+	/* Mobile Responsiveness */
+	@media (max-width: 768px) {
+		.link-card {
+			margin: 10px 0;
+			padding: 1px;
+		}
+
+		.kanji-mark {
+			font-size: 2em;
+			top: 5px;
+			right: 5px;
+		}
+
+		.link-card > a {
+			padding: 1rem;
+		}
+
+		h2 {
+			font-size: 1rem;
+		}
+
+		h2::before {
+			font-size: 0.5em;
+			top: -12px;
+		}
+
+		p {
+			font-size: 1rem;
+			margin-top: 0.3rem;
+		}
+
+		.card-content::before {
+			display: none; /* Hide floating text on mobile */
+		}
 	}
-	.link-card:is(:hover, :focus-within) h2 {
-		color: rgb(var(--accent-light));
+
+	/* Small mobile devices */
+	@media (max-width: 480px) {
+		.link-card {
+			margin: 8px 0;
+		}
+
+		.kanji-mark {
+			font-size: 1.5em;
+		}
+
+		h2 {
+			font-size: 0.9rem;
+		}
+
+		p {
+			font-size: 0.9rem;
+		}
+
+		/* Ensure touch targets are large enough */
+		.link-card > a {
+			padding: 1.2rem;
+			min-height: 44px;
+		}
+	}
+
+	/* Prevent hover effects on touch devices */
+	@media (hover: none) {
+		.link-card:hover {
+			transform: none;
+		}
+
+		.link-card:active {
+			transform: scale(0.98);
+			transition: transform 0.1s;
+		}
+
+		.card-glitch,
+		.link-card::before,
+		h2::before,
+		.card-content::before {
+			display: none;
+		}
+
+		/* Show simpler hover state for touch */
+		.link-card:active h2 span {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	/* Landscape orientation adjustments */
+	@media (max-width: 768px) and (orientation: landscape) {
+		.link-card {
+			margin: 5px 0;
+		}
+
+		.kanji-mark {
+			display: none; /* Hide floating kanji in landscape */
+		}
+	}
+
+	/* Prefers reduced motion */
+	@media (prefers-reduced-motion: reduce) {
+		.link-card,
+		.kanji-mark,
+		h2 span,
+		.card-glitch {
+			animation: none;
+			transition: none;
+		}
+
+		.link-card:hover {
+			transform: none;
+		}
 	}
 </style>
