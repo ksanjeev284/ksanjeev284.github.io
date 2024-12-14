@@ -29,7 +29,12 @@ const websites = [
     { url: 'https://mathematicaltoolkit.netlify.app/', name: 'math-toolkit' },
     { url: 'https://rubixcubesolver.netlify.app/', name: 'rubix-cube' },
     { url: 'https://youtubetospotifyplaylistconverter.netlify.app/', name: 'yt-spotify' },
-    { url: 'https://3d2048game.netlify.app/', name: '2048-3d' }
+    { url: 'https://3d2048game.netlify.app/', name: '2048-3d' },
+    { url: 'https://contributeopensource.com/', name: 'contribute-opensource' },
+    { url: 'https://deathnoteanime.netlify.app/', name: 'deathnote' },
+    { url: 'https://todolistvaporwavestlye.netlify.app/', name: 'vaporwave-todo' },
+    { url: 'https://webassemblyaddition.netlify.app/', name: 'wasm-addition' },
+    { url: 'https://showcaseyourresume.netlify.app/', name: 'resume-showcase' }
 ];
 
 async function takeScreenshots() {
