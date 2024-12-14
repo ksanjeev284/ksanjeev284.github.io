@@ -167,5 +167,40 @@ export const projects: Project[] = [
     url: "https://3d2048game.netlify.app/",
     image: "/project-images/2048-3d.png",
     tags: ["Three.js", "Game Development", "3D"]
+  },
+  {
+    title: "Contribute Open Source",
+    description: "Platform to help developers find and contribute to open source projects",
+    url: "https://contributeopensource.com/",
+    image: "/project-images/contribute-opensource.png",
+    tags: ["Open Source", "Community", "Developer Tools"]
+  },
+  {
+    title: "Death Note Anime",
+    description: "Fan website dedicated to the Death Note anime series",
+    url: "https://deathnoteanime.netlify.app/",
+    image: "/project-images/deathnote.png",
+    tags: ["Anime", "Fan Site", "Entertainment"]
+  },
+  {
+    title: "Vaporwave Todo List",
+    description: "A stylish todo list application with vaporwave aesthetics",
+    url: "https://todolistvaporwavestlye.netlify.app/",
+    image: "/project-images/vaporwave-todo.png",
+    tags: ["Todo App", "Vaporwave", "Productivity"]
+  },
+  {
+    title: "WebAssembly Addition",
+    description: "Simple demonstration of WebAssembly capabilities with basic arithmetic",
+    url: "https://webassemblyaddition.netlify.app/",
+    image: "/project-images/wasm-addition.png",
+    tags: ["WebAssembly", "Demo", "Web Technology"]
+  },
+  {
+    title: "Resume Showcase",
+    description: "Platform to create and showcase professional resumes",
+    url: "https://showcaseyourresume.netlify.app/",
+    image: "/project-images/resume-showcase.png",
+    tags: ["Resume Builder", "Career", "Professional"]
   }
 ];
